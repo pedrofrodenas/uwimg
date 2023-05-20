@@ -40,7 +40,7 @@ void set_pixel(image im, int c, int h, int w, float v)
 
 image copy_image(image im)
 {
-    image copy = make_image(im.w, im.h, im.c);
+    image copy = make_image(im.c, im.h, im.w);
     // TODO Fill this in
     size_t n_bytes = im.w * im.h * im.c * sizeof(float);
     memcpy(copy.data, im.data, n_bytes);
@@ -50,7 +50,7 @@ image copy_image(image im)
 image rgb_to_grayscale(image im)
 {
     assert(im.c == 3);
-    image gray = make_image(im.w, im.h, 1);
+    image gray = make_image(1, im.h, im.w);
     // TODO Fill this in
     int pixel_per_channel = im.w * im.h;
     for (size_t i = 0; i != pixel_per_channel; ++i)
