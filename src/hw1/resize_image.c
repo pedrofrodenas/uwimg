@@ -5,8 +5,7 @@ float nn_interpolate(image im, int c, float h, float w)
 {
     // TODO
     // Nearest Neightbour interpolation
-    return get_pixel(im, c, round(h), round(w));
-    return 0;
+    return get_pixel(im, c, roundf(h), roundf(w));
 }
 
 image nn_resize(image im, int h, int w)
@@ -15,28 +14,28 @@ image nn_resize(image im, int h, int w)
     image imageResized = make_image(im.c, h, w);
 
     // Get resizing coeficients
-    float Sx, Sy = 0;
+    float Sx, Sy = 0.f;
     Sx = w/(float)im.w;
     Sy = h/(float)im.h;
 
-    float Xorig, Yorig = 0;
-    float pixel = 0;
+    float Xorig, Yorig = 0.f;
+    float pixel = 0.f;
     for (int c=0; c!=im.c; c++)
     {
         for (int y=0; y!=h; y++)
         {
         // Original coordinate system position calculation
         //   Reescale + Grid Shifting  
-        Yorig = (y/Sy)+(0.5/Sy)-0.5;
+        Yorig = (y/Sy)+(0.5f/Sy)-0.5f;
             for (int x=0; x!=w; x++)
             {
-                Xorig = (x/Sx)+(0.5/Sx)-0.5;
+                Xorig = (x/Sx)+(0.5f/Sx)-0.5f;
                 pixel = nn_interpolate(im, c, Yorig, Xorig);
                 set_pixel(imageResized, c, y, x, pixel);
             }
         }
     }
-    return imageResized; // <- probably delete this
+    return imageResized;
 }
 
 float bilinear_interpolate(image im, int c, float h, float w)

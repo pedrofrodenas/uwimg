@@ -60,7 +60,16 @@ im1 = load_image("data/dog.jpg")
 
 np_img = convert_to_np(im1)
 
+resized2 = nn_resize(im1, 467, 713)
 
+res_np = convert_to_np(resized2)
+
+im2 = load_image("/Users/pedrofrodenas/Projects/uwimg/figs/dog-resize-nn.png")\
+    
+im2_np = convert_to_np(im2)
+
+# Check where are not equal
+b = np.where(im2_np != res_np, im2_np, 0)
 
 
 
