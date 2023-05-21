@@ -49,7 +49,7 @@ float bilinear_interpolate(image im, int c, float h, float w)
     // Variables to place pixel values of coorners coordinates
     float v1, v2, v3, v4;
     // Variables to place calculated distances (d) and interpolated values (q)
-    float d1,d2,d3,d4,q1,q2,q=0;
+    float d1,d2,d3,d4,q1,q2,q=0.f;
 
     // Arreglar esto para contemplar estos corner case 
     if ( (truncatedx == w) && (truncatedy == h))
@@ -93,7 +93,7 @@ float bilinear_interpolate(image im, int c, float h, float w)
 
     // Get sorrounding pixels
     v1 = get_pixel(im, c, y1, x1);
-    v2 = get_pixel(im, c, y2, x2);
+    v2 = get_pixel(im, c, y1, x2);
     v3 = get_pixel(im, c, y2, x1);
     v4 = get_pixel(im, c, y2, x2);
 
