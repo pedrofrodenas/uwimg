@@ -164,59 +164,6 @@ void test_get_pixel(){
     free_image(im);
 }
 
-void test_prueba(){
-    image d = make_image(3,3,4);
-    set_pixel(d, 0, 0, 0, 10/255.);
-    set_pixel(d, 0, 0, 1, 30/255.);
-    set_pixel(d, 0, 0, 2, 60/255.);
-    set_pixel(d, 0, 0, 3, 60/255.);
-
-    set_pixel(d, 0, 1, 0, 10/255.);
-    set_pixel(d, 0, 1, 1, 30/255.);
-    set_pixel(d, 0, 1, 2, 60/255.);
-    set_pixel(d, 0, 1, 3, 60/255.);
-
-    set_pixel(d, 0, 2, 0, 10/255.);
-    set_pixel(d, 0, 2, 1, 30/255.);
-    set_pixel(d, 0, 2, 2, 60/255.);
-    set_pixel(d, 0, 2, 3, 60/255.);
-
-
-
-    set_pixel(d, 1, 0, 0, 10/255.);
-    set_pixel(d, 1, 0, 1, 30/255.);
-    set_pixel(d, 1, 0, 2, 60/255.);
-    set_pixel(d, 1, 0, 3, 60/255.);
-
-    set_pixel(d, 1, 1, 0, 10/255.);
-    set_pixel(d, 1, 1, 1, 30/255.);
-    set_pixel(d, 1, 1, 2, 60/255.);
-    set_pixel(d, 1, 1, 3, 60/255.);
-
-    set_pixel(d, 1, 2, 0, 10/255.);
-    set_pixel(d, 1, 2, 1, 30/255.);
-    set_pixel(d, 1, 2, 2, 60/255.);
-    set_pixel(d, 1, 2, 3, 60/255.);
-
-    set_pixel(d, 2, 0, 0, 10/255.);
-    set_pixel(d, 2, 0, 1, 30/255.);
-    set_pixel(d, 2, 0, 2, 60/255.);
-    set_pixel(d, 2, 0, 3, 60/255.);
-
-    set_pixel(d, 2, 1, 0, 10/255.);
-    set_pixel(d, 2, 1, 1, 30/255.);
-    set_pixel(d, 2, 1, 2, 60/255.);
-    set_pixel(d, 2, 1, 3, 60/255.);
-
-    set_pixel(d, 2, 2, 0, 10/255.);
-    set_pixel(d, 2, 2, 1, 30/255.);
-    set_pixel(d, 2, 2, 2, 60/255.);
-    set_pixel(d, 2, 2, 3, 60/255.);
-
-    save_image(d, "imageeee");
-
-}
-
 void test_set_pixel(){
     image gt = load_image("data/dotz.png");
     image d = make_image(3,2,4);
@@ -857,7 +804,6 @@ void test_sobel(){
 
 void test_hw0()
 {
-    test_prueba();
     test_get_pixel();
     test_set_pixel();
     test_copy();
