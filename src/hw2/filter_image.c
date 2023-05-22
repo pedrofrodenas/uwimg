@@ -314,12 +314,68 @@ void feature_normalize(image im)
 
 image *sobel_image(image im)
 {
-    // TODO
-    return calloc(2, sizeof(image));
+    image *imgarray = calloc(2, sizeof(image));
+
+    image sobelxF = make_gx_filter();
+    image sobelyF = make_gy_filter();
+
+    image sobelXout = convolve_image(im, sobelxF, 0);
+    image sobelYout = convolve_image(im, sobelyF, 0);
+
+    imgarray[0] = make_image(sobelXout.c, sobelXout.h, sobelXout.w);
+    imgarray[1] = make_image(sobelXout.c, sobelXout.h, sobelXout.w);
+
+    float Gx, Gy;
+    for (int y = 0; y!= sobelXout.h; y++)
+    {
+        for (int x=0; x!=sobelXout.w; x++)
+        {
+                Gx = get_pixel(sobelXout, 0, y, x);
+                Gy = get_pixel(sobelYout, 0, y, x);
+                set_pixel(imgarray[0], 0, y, x, sqrt(pow(Gx, 2)+pow(Gy, 2)));
+                set_pixel(imgarray[1], 0, y, x,  atan2f(Gy, Gx));
+        }
+    }
+    free_image(sobelxF);
+    free_image(sobelyF);
+    free_image(sobelXout);
+    free_image(sobelYout);
+
+    return imgarray;
 }
 
 image colorize_sobel(image im)
 {
     // TODO
-    return make_image(1,1,1);
+    image filter = make_gaussian_filter(3);
+
+    image outConv = convolve_image(im, filter, 1);
+
+    image *magnitude = sobel_image(outConv);
+
+    feature_normalize(magnitude[0]);
+    feature_normalize(magnitude[1]);
+
+    image output = make_image(im.c, im.h, im.w);
+
+    for (int i=0; i!=im.h; i++)
+    {
+        for (int j=0; j!=im.w; j++)
+        {
+            set_pixel(output, 0, i, j, get_pixel(magnitude[1], 0, i, j));
+            set_pixel(output, 1, i, j, get_pixel(magnitude[0], 0, i, j));
+            set_pixel(output, 2, i, j, get_pixel(magnitude[0], 0, i, j));
+        }
+    }
+    hsv_to_rgb(output);
+
+    free_image(filter);
+    free_image(outConv);
+    
+    for (int i=0; i<2; ++i)
+    {
+        free_image(magnitude[i]);
+    }
+
+    return output;
 }
