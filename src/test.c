@@ -528,31 +528,31 @@ void test_sobel(){
     free(res);
 }
 
-// void test_structure()
-// {
-//     image im = load_image("data/dogbw.png");
-//     image s = structure_matrix(im, 2);
-//     feature_normalize2(s);
-//     image gt = load_image("figs/structure.png");
-//     TEST(same_image(s, gt, EPS));
-//     free_image(im);
-//     free_image(s);
-//     free_image(gt);
-// }
+void test_structure()
+{
+    image im = load_image("data/dogbw.png");
+    image s = structure_matrix(im, 2);
+    feature_normalize2(s);
+    image gt = load_image("figs/structure.png");
+    TEST(same_image(s, gt, EPS));
+    free_image(im);
+    free_image(s);
+    free_image(gt);
+}
 
-// void test_cornerness()
-// {
-//     image im = load_image("data/dogbw.png");
-//     image s = structure_matrix(im, 2);
-//     image c = cornerness_response(s);
-//     feature_normalize2(c);
-//     image gt = load_image("figs/response.png");
-//     TEST(same_image(c, gt, EPS));
-//     free_image(im);
-//     free_image(s);
-//     free_image(c);
-//     free_image(gt);
-// }
+void test_cornerness()
+{
+    image im = load_image("data/dogbw.png");
+    image s = structure_matrix(im, 2);
+    image c = cornerness_response(s);
+    feature_normalize2(c);
+    image gt = load_image("figs/response.png");
+    TEST(same_image(c, gt, EPS));
+    free_image(im);
+    free_image(s);
+    free_image(c);
+    free_image(gt);
+}
 
 
 
@@ -836,14 +836,14 @@ void test_hw2()
     test_sobel();
     printf("%d tests, %d passed, %d failed\n", tests_total, tests_total-tests_fail, tests_fail);
 }
-// void test_hw3()
-// {
-//     test_structure();
-//     test_cornerness();
-//     test_projection();
-//     test_compute_homography();
-//     printf("%d tests, %d passed, %d failed\n", tests_total, tests_total-tests_fail, tests_fail);
-// }
+void test_hw3()
+{
+    test_structure();
+    test_cornerness();
+    // test_projection();
+    // test_compute_homography();
+    printf("%d tests, %d passed, %d failed\n", tests_total, tests_total-tests_fail, tests_fail);
+}
 // void make_hw4_tests()
 // {
 //     image dots = load_image("data/dots.png");
