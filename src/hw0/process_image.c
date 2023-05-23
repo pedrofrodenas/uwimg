@@ -248,8 +248,8 @@ void scale_image(image im, int c, float v)
     {
         for (int x=0; x!=im.w; x++)
         {
-            pixel = get_pixel(im, x, y, c);
-            set_pixel(im, x, y, c, pixel*v);
+            pixel = get_pixel(im, c, y, x);
+            set_pixel(im, c, y, x, pixel*v);
         }
     }
 }

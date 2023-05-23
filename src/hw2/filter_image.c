@@ -20,7 +20,7 @@ void l1_normalize(image im)
         cumsum += im.data[i];
     }
 
-    if (cumsum == 0.f)
+    if (cumsum == 0)
     {
         printf("Division by 0 in l1_normalize, all values in image are 0's \n");
     }
@@ -180,11 +180,14 @@ image make_gaussian_filter(float sigma)
     {
         for (int x=0; x!=gaussian.w; x++)
         {
-            base = 1 / (TWOPI*powf(sigma, 2));
-            exponent = expf(-1*(pow(x-shiftingXY,2)+pow(y-shiftingXY,2))/(2*powf(sigma,2)));
+            base = 1.0f / (TWOPI*powf(sigma, 2.f));
+            exponent = expf(-(powf(x-shiftingXY,2)+powf(y-shiftingXY,2))/(2*powf(sigma,2)));
             set_pixel(gaussian, 0, y, x, base*exponent);
         }
     }
+
+    l1_normalize(gaussian);
+
     return gaussian;
 }
 

@@ -72,6 +72,27 @@ im2_np = convert_to_np(im2)
 b = np.where(im2_np != res_np, im2_np, 0)
 
 
+# def test_gaussian_filter():
+    
+    
+    
+f = make_gaussian_filter(7)
+
+f_np = convert_to_np(f)
+
+f_scaled = f_np * 100
+
+gt = load_image("figs/gaussian_filter_7.png")
+
+gt_np = convert_to_np(gt)
+
+gt_scaled = gt_np / 100
+
+gtandf = np.where(f_np != gt_np, f_np, 0)
+    
+
+
+
 
 
 
