@@ -139,7 +139,7 @@ image make_sharpen_filter()
 image make_emboss_filter()
 {
     // TODO
-    image embossFilter = make_image(3,3,1);
+    image embossFilter = make_image(1,3,3);
     // First row values
     set_pixel(embossFilter, 0, 0, 0, -2);
     set_pixel(embossFilter, 0, 0, 1, -1);
