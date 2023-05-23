@@ -115,9 +115,34 @@ image smooth_image(image im, float sigma)
 //          third channel is IxIy.
 image structure_matrix(image im, float sigma)
 {
-    image S = make_image(3, im.h, im.w);
-    // TODO: calculate structure matrix for im.
+    image M = make_image(3, im.h, im.w);
 
+    image gx = make_gx_filter();
+    image gy = make_gy_filter();
+
+    image Ix = convolve_image(im, gx, 0);
+    image Iy = convolve_image(im, gy, 0);
+
+    float auxX, auxY;
+    for (int i=0; i!=im.h; i++)
+    {
+        for (int j=0; j!=im.w; j++)
+        {
+            auxX = get_pixel(Ix, 0, i, j);
+            auxY = get_pixel(Iy, 0, i, j);
+            set_pixel(M, 0, i, j, pow(auxX, 2));
+            set_pixel(M, 1, i, j, pow(auxY, 2));
+            set_pixel(M, 2, i, j, auxX*auxY);
+        }
+    }
+
+    image S = smooth_image(M, sigma);
+    
+    free_image(M);
+    free_image(gx);
+    free_image(gy);
+    free_image(Ix);
+    free_image(Iy);
     return S;
 }
 
@@ -130,6 +155,21 @@ image cornerness_response(image S)
     // TODO: fill in R, "cornerness" for each pixel using the structure matrix.
     // We'll use formulation det(S) - alpha * trace(S)^2, alpha = .06.
 
+    const float alpha = .06F;
+
+    float A,B,C, det, trace;
+    for (int y = 0; y!=S.h; y++)
+    {
+        for (int x=0; x!=S.w; x++)
+        {
+            A = get_pixel(S, 0, y, x);
+            B = get_pixel(S, 1, y, x);
+            C = get_pixel(S, 2, y, x);
+            det = (A*B) - pow(C, 2);
+            trace = A+B;
+            set_pixel(R, 0, y, x, det - alpha * pow(trace,2));
+        }
+    }
     return R;
 }
 
