@@ -4,11 +4,11 @@ DEBUG=0
 VERBOSE=0
 
 #OBJ=image_opencv.o load_image.o process_image.o args.o filter_image.o resize_image.o test.o harris_image.o matrix.o panorama_image.o flow_image.o list.o data.o classifier.o
-OBJ=image_opencv.o load_image.o process_image.o args.o filter_image.o resize_image.o test.o harris_image.o matrix.o panorama_image.o list.o data.o
+OBJ=image_opencv.o load_image.o process_image.o args.o filter_image.o resize_image.o test.o harris_image.o matrix.o panorama_image.o flow_image.o list.o data.o
 EXOBJ=main.o
 
 #VPATH=./src/:./:./src/hw0:./src/hw1:./src/hw2:./src/hw3:./src/hw4:./src/hw5:./src/hw6:./src/hw7
-VPATH=./src/:./:./src/hw0:./src/hw1:./src/hw2:./src/hw3:
+VPATH=./src/:./:./src/hw0:./src/hw1:./src/hw2:./src/hw3:./src/hw4:
 SLIB=libuwimg.so
 ALIB=libuwimg.a
 EXEC=uwimg

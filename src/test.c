@@ -844,117 +844,117 @@ void test_hw3()
     test_compute_homography();
     printf("%d tests, %d passed, %d failed\n", tests_total, tests_total-tests_fail, tests_fail);
 }
-// void make_hw4_tests()
-// {
-//     image dots = load_image("data/dots.png");
-//     image intdot = make_integral_image(dots);
-//     save_image_binary(intdot, "data/dotsintegral.bin");
+void make_hw4_tests()
+{
+    image dots = load_image("data/dots.png");
+    image intdot = make_integral_image(dots);
+    save_image_binary(intdot, "data/dotsintegral.bin");
 
-//     image dogbw = load_image("data/dogbw.png");
-//     image intdog = make_integral_image(dogbw);
-//     save_image_binary(intdog, "data/dogintegral.bin");
+    image dogbw = load_image("data/dogbw.png");
+    image intdog = make_integral_image(dogbw);
+    save_image_binary(intdog, "data/dogintegral.bin");
 
-//     image dog = load_image("data/dog.jpg");
-//     image smooth = box_filter_image(dog, 15);
-//     save_png(smooth, "data/dogbox");
+    image dog = load_image("data/dog.jpg");
+    image smooth = box_filter_image(dog, 15);
+    save_png(smooth, "data/dogbox");
 
-//     image smooth_c = center_crop(smooth);
-//     save_png(smooth_c, "data/dogboxcenter");
+    image smooth_c = center_crop(smooth);
+    save_png(smooth_c, "data/dogboxcenter");
 
-//     image doga = load_image("data/dog_a_small.jpg");
-//     image dogb = load_image("data/dog_b_small.jpg");
-//     image structure = time_structure_matrix(dogb, doga, 15);
-//     save_image_binary(structure, "data/structure.bin");
+    image doga = load_image("data/dog_a_small.jpg");
+    image dogb = load_image("data/dog_b_small.jpg");
+    image structure = time_structure_matrix(dogb, doga, 15);
+    save_image_binary(structure, "data/structure.bin");
 
-//     image velocity = velocity_image(structure, 5);
-//     save_image_binary(velocity, "data/velocity.bin");
-// }
-// void test_integral_image()
-// {
-//     image dots = load_image("data/dots.png");
-//     image intdot = make_integral_image(dots);
-//     image intdot_t = load_image_binary("data/dotsintegral.bin");
-//     TEST(same_image(intdot, intdot_t, EPS));
+    image velocity = velocity_image(structure, 5);
+    save_image_binary(velocity, "data/velocity.bin");
+}
+void test_integral_image()
+{
+    image dots = load_image("data/dots.png");
+    image intdot = make_integral_image(dots);
+    image intdot_t = load_image_binary("data/dotsintegral.bin");
+    TEST(same_image(intdot, intdot_t, EPS));
 
-//     image dog = load_image("data/dogbw.png");
-//     image intdog = make_integral_image(dog);
-//     image intdog_t = load_image_binary("data/dogintegral.bin");
-//     TEST(same_image(intdog, intdog_t, .6));
+    image dog = load_image("data/dogbw.png");
+    image intdog = make_integral_image(dog);
+    image intdog_t = load_image_binary("data/dogintegral.bin");
+    TEST(same_image(intdog, intdog_t, .6));
 
-//     free_image(dots);
-//     free_image(intdot);
-//     free_image(intdot_t);
-//     free_image(dog);
-//     free_image(intdog);
-//     free_image(intdog_t);
-// }
-// void test_exact_box_filter_image()
-// {
-//     image dog = load_image("data/dog.jpg");
-//     image smooth = box_filter_image(dog, 15);
-//     image smooth_t = load_image("data/dogbox.png");
-//     //printf("avg origin difference test: %f\n", avg_diff(smooth, dog));
-//     //printf("avg smooth difference test: %f\n", avg_diff(smooth, smooth_t));
-//     TEST(same_image(smooth, smooth_t, EPS*2));
+    free_image(dots);
+    free_image(intdot);
+    free_image(intdot_t);
+    free_image(dog);
+    free_image(intdog);
+    free_image(intdog_t);
+}
+void test_exact_box_filter_image()
+{
+    image dog = load_image("data/dog.jpg");
+    image smooth = box_filter_image(dog, 15);
+    image smooth_t = load_image("data/dogbox.png");
+    //printf("avg origin difference test: %f\n", avg_diff(smooth, dog));
+    //printf("avg smooth difference test: %f\n", avg_diff(smooth, smooth_t));
+    TEST(same_image(smooth, smooth_t, EPS*2));
 
-//     free_image(dog);
-//     free_image(smooth);
-//     free_image(smooth_t);
-// }
+    free_image(dog);
+    free_image(smooth);
+    free_image(smooth_t);
+}
 
-// void test_good_enough_box_filter_image()
-// {
-//     image dog = load_image("data/dog.jpg");
-//     image smooth = box_filter_image(dog, 15);
-//     image smooth_c = center_crop(smooth);
-//     image smooth_t = load_image("data/dogboxcenter.png");
-//     image dog_c = center_crop(dog);
-//     printf("avg origin difference test: %f\n", avg_diff(smooth_c, dog_c));
-//     printf("avg smooth difference test: %f\n", avg_diff(smooth_c, smooth_t));
-//     TEST(same_image(smooth_c, smooth_t, EPS*2));
+void test_good_enough_box_filter_image()
+{
+    image dog = load_image("data/dog.jpg");
+    image smooth = box_filter_image(dog, 15);
+    image smooth_c = center_crop(smooth);
+    image smooth_t = load_image("data/dogboxcenter.png");
+    image dog_c = center_crop(dog);
+    printf("avg origin difference test: %f\n", avg_diff(smooth_c, dog_c));
+    printf("avg smooth difference test: %f\n", avg_diff(smooth_c, smooth_t));
+    TEST(same_image(smooth_c, smooth_t, EPS*2));
 
-//     free_image(dog);
-//     free_image(dog_c);
-//     free_image(smooth);
-//     free_image(smooth_t);
-//     free_image(smooth_c);
-// }
-// void test_structure_image()
-// {
-//     image doga = load_image("data/dog_a_small.jpg");
-//     image dogb = load_image("data/dog_b_small.jpg");
-//     image structure = time_structure_matrix(dogb, doga, 15);
-//     image structure_t = load_image_binary("data/structure.bin");
-//     image structure_c = center_crop(structure);
-//     image structure_tc = center_crop(structure_t);
-//     TEST(same_image(structure_c, structure_tc, EPS));
+    free_image(dog);
+    free_image(dog_c);
+    free_image(smooth);
+    free_image(smooth_t);
+    free_image(smooth_c);
+}
+void test_structure_image()
+{
+    image doga = load_image("data/dog_a_small.jpg");
+    image dogb = load_image("data/dog_b_small.jpg");
+    image structure = time_structure_matrix(dogb, doga, 15);
+    image structure_t = load_image_binary("data/structure.bin");
+    image structure_c = center_crop(structure);
+    image structure_tc = center_crop(structure_t);
+    TEST(same_image(structure_c, structure_tc, EPS));
 
-//     free_image(doga);
-//     free_image(dogb);
-//     free_image(structure);
-//     free_image(structure_t);
-//     free_image(structure_c);
-//     free_image(structure_tc);
-// }
-// void test_velocity_image()
-// {
-//     image structure = load_image_binary("data/structure.bin");
-//     image velocity = velocity_image(structure, 5);
-//     image velocity_t = load_image_binary("data/velocity.bin");
-//     TEST(same_image(velocity, velocity_t, EPS));
-//     free_image(structure);
-//     free_image(velocity);
-//     free_image(velocity_t);
-// }
-// void test_hw4()
-// {
-//     test_integral_image();
-//     test_exact_box_filter_image();
-//     test_good_enough_box_filter_image();
-//     test_structure_image();
-//     test_velocity_image();
-//     printf("%d tests, %d passed, %d failed\n", tests_total, tests_total-tests_fail, tests_fail);
-// }
+    free_image(doga);
+    free_image(dogb);
+    free_image(structure);
+    free_image(structure_t);
+    free_image(structure_c);
+    free_image(structure_tc);
+}
+void test_velocity_image()
+{
+    image structure = load_image_binary("data/structure.bin");
+    image velocity = velocity_image(structure, 5);
+    image velocity_t = load_image_binary("data/velocity.bin");
+    TEST(same_image(velocity, velocity_t, EPS));
+    free_image(structure);
+    free_image(velocity);
+    free_image(velocity_t);
+}
+void test_hw4()
+{
+    test_integral_image();
+    test_exact_box_filter_image();
+    test_good_enough_box_filter_image();
+    test_structure_image();
+    test_velocity_image();
+    printf("%d tests, %d passed, %d failed\n", tests_total, tests_total-tests_fail, tests_fail);
+}
 // void test_hw5()
 // {
 //     test_activate_matrix();

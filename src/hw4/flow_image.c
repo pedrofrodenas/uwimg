@@ -47,7 +47,48 @@ void draw_line(image im, float y, float x, float dy, float dx)
 image make_integral_image(image im)
 {
     image integ = make_image(im.c, im.h, im.w);
+    int i, j, k;
     // TODO: fill in the integral image
+
+    // Copy first pixel [0][0] on all channels
+    for (k = 0; k < im.c; ++k)
+    {
+        set_pixel(integ, k, 0, 0, get_pixel(im, k, 0, 0));
+    }
+
+    float pixel;
+    // Calculate over first row
+    for (k = 0; k < im.c; ++k)
+    {
+        for (i = 1; i < im.w; ++i)
+        {
+            pixel = get_pixel(integ, k, 0, i-1) + get_pixel(im, k, 0, i);
+            set_pixel(integ, k, 0, i, pixel);
+        }
+    }
+
+    // Calculate over first colum
+    for (k = 0; k < im.c; ++k)
+    {
+        for (j= 1; j < im.h; ++j)
+        {
+            pixel = get_pixel(integ, k, j-1, 0) + get_pixel(im, k, j, 0);
+            set_pixel(integ, k, j, 0, pixel);
+        }
+    }
+
+    // Now apply the algorithm to the rest of the image
+    for (k = 0; k < im.c; ++k)
+    {
+        for (j = 1; j < im.h; ++j)
+        {
+            for (i = 1; i < im.w; ++i)
+            {
+                pixel = get_pixel(im, k, j, i) + get_pixel(integ, k, j, i-1) + get_pixel(integ, k, j-1, i) - get_pixel(integ, k, j-1, i-1);
+                set_pixel(integ, k, j, i, pixel);
+            }
+        }
+    }
     return integ;
 }
 
@@ -62,7 +103,28 @@ image box_filter_image(image im, int s)
     image S = make_image(im.c, im.h, im.w);
     // TODO: fill in S using the integral image.
 
+    int outABC = ceil(s/2.0f);
+    int inD = floor(s/2.0f);
 
+    // TODO: fix border edge-case method
+    float A, B, C, D;
+    float cumsum;
+    for (k = 0; k < im.c; ++k)
+    {
+        for (j = 0; j < im.h; ++j)
+        {
+            for (i = 0; i < im.w; ++i)
+            {
+                D = get_pixel(integ, k, j+inD, i+inD);
+                B = get_pixel(integ, k, j-outABC, i+inD);
+                C = get_pixel(integ, k, j+inD, i-outABC);
+                A = get_pixel(integ, k, j-outABC, i-outABC);
+
+                cumsum = D-B-C+A;       
+                set_pixel(S, k, j, i, cumsum/pow(s,2));
+            }
+        }
+    }
     free_image(integ);
     return S;
 }
@@ -75,8 +137,11 @@ image box_filter_image(image im, int s)
 //          3rd channel is IxIy, 4th channel is IxIt, 5th channel is IyIt.
 image time_structure_matrix(image im, image prev, int s)
 {
-    int i;
+    int i,j;
     int converted = 0;
+
+    // Time-Structure Matrix with 5 channels
+    image S = make_image(5, im.h, im.w);
     if(im.c == 3){
         converted = 1;
         im = rgb_to_grayscale(im);
@@ -84,12 +149,53 @@ image time_structure_matrix(image im, image prev, int s)
     }
 
     // TODO: calculate gradients, structure components, and smooth them
-    image S;
+    image gx = make_gx_filter();
+    image gy = make_gy_filter();
+
+    // TODO: Check if preserve must be set to 0
+    image Ix = convolve_image(im, gx, 0);
+    image Iy = convolve_image(im, gy, 0);
+
+    image It = sub_image(prev, im);
+
+    float pixelIx, pixelIy, pixelIt;
+    for (i=0; i<im.h; ++i)
+    {
+        for (j=0; j<im.w; ++j)
+        {
+            pixelIx = get_pixel(Ix, 0, i, j);
+            pixelIy = get_pixel(Iy, 0, i, j);
+            pixelIt = get_pixel(It, 0, i, j);
+
+            // Ix^2
+            set_pixel(S, 0, i, j, powf(pixelIx, 2));
+            // Iy^2
+            set_pixel(S, 1, i, j, powf(pixelIy, 2));
+            // IxIy
+            set_pixel(S, 2, i, j, pixelIx*pixelIy);
+            // IxIt
+            set_pixel(S, 3, i, j, pixelIx*pixelIt);
+            // IyIt
+            set_pixel(S, 4, i, j, pixelIy*pixelIt);
+        }
+    }
+
+    // Smoth Time-Structure Matrix
+    // TODO: Probar cambiar esto por suavizado gaussiano.
+    image Ssmooth = box_filter_image(S, s);
+
+
+    free_image(gx);
+    free_image(gy);
+    free_image(Ix);
+    free_image(Iy);
+    free_image(It);
+    free_image(S);
 
     if(converted){
         free_image(im); free_image(prev);
     }
-    return S;
+    return Ssmooth;
 }
 
 // Calculate the velocity given a structure image
@@ -100,6 +206,11 @@ image velocity_image(image S, int stride)
     image v = make_image(3, S.h/stride, S.w/stride);
     int i, j;
     matrix M = make_matrix(2,2);
+    matrix b = make_matrix(2,1);
+
+    float vx;
+    float vy;
+
     for(j = (stride-1)/2; j < S.h; j += stride){
         for(i = (stride-1)/2; i < S.w; i += stride){
             float Ixx = S.data[i + S.w*j + 0*S.w*S.h];
@@ -109,15 +220,38 @@ image velocity_image(image S, int stride)
             float Iyt = S.data[i + S.w*j + 4*S.w*S.h];
 
             // TODO: calculate vx and vy using the flow equation
-            float vx = 0;
-            float vy = 0;
+            M.data[0][0] = Ixx;
+            M.data[0][1] = Ixy;
+            M.data[1][0] = Ixy;
+            M.data[1][1] = Iyy;
 
+            b.data[0][0] = -Ixt;
+            b.data[1][0] = -Iyt;
 
+            // TODO: Ver si esto es correcto hacerlo
+            matrix Minv = matrix_invert(M);
+
+            if ((Minv.rows == 0) && (Minv.cols == 0))
+            {
+                printf("Cell x: %d, y: %d not invertible \n", i, j);
+                vx = 0;
+                vy = 0;
+            }
+            else
+            {
+                matrix d = matrix_mult_matrix(Minv, b);
+            
+                vx = d.data[0][0];
+                vy = d.data[1][0];
+                free_matrix(d);
+            }
+            free_matrix(Minv);
             set_pixel(v, 0, j/stride, i/stride, vx);
-            set_pixel(v, 1, j/stride, i/stride, vy);
+            set_pixel(v, 0, j/stride, i/stride, vy);
         }
     }
     free_matrix(M);
+    free_matrix(b);
     return v;
 }
 
