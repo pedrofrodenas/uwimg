@@ -32,24 +32,20 @@ def convert_to_image(np_img):
     
     if np_img.ndim == 3:
         h, w, c = np_img.shape
-        out = make_image(w, h, c)
+        out = make_image(c,h, w)
         
         for channel in range(c):
             for y in range(h):
                 for x in range(w):
-                    set_pixel(out, x, y, channel, np_img[y,x,channel])
+                    set_pixel(out, channel, y, x, np_img[y,x,channel])
     else:
         h, w = np_img.shape
         c = 0
-        out = make_image(w, h, 1)
+        out = make_image(1, h, w)
         
         for y in range(h):
             for x in range(w):
-                set_pixel(out, x, y, 0, np_img[y,x])
-        
-    
-    
-                
+                set_pixel(out, 0, y, x, np_img[y,x])
     return out
 
 def load_image(f):
