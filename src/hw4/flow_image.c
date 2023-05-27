@@ -99,6 +99,7 @@ image make_integral_image(image im)
 image box_filter_image(image im, int s)
 {
     int i,j,k;
+
     image integ = make_integral_image(im);
     image S = make_image(im.c, im.h, im.w);
     // TODO: fill in S using the integral image.
@@ -107,7 +108,9 @@ image box_filter_image(image im, int s)
     int inD = floor(s/2.0f);
 
     // TODO: fix border edge-case method
-    float A, B, C, D;
+    int left, right, top, bottom;
+    float Apix, Bpix, Cpix, Dpix;
+
     float cumsum;
     for (k = 0; k < im.c; ++k)
     {
@@ -115,12 +118,20 @@ image box_filter_image(image im, int s)
         {
             for (i = 0; i < im.w; ++i)
             {
-                D = get_pixel(integ, k, j+inD, i+inD);
-                B = get_pixel(integ, k, j-outABC, i+inD);
-                C = get_pixel(integ, k, j+inD, i-outABC);
-                A = get_pixel(integ, k, j-outABC, i-outABC);
+                left = i-inD;
+                right = i+inD;
+                top = j-inD;
+                bottom = j+inD;
 
-                cumsum = D-B-C+A;       
+                
+
+
+                Dpix = get_pixel(integ, k, j+inD, i+inD);
+                Bpix = get_pixel(integ, k, j-outABC, i+inD);
+                Cpix = get_pixel(integ, k, j+inD, i-outABC);
+                Apix = get_pixel(integ, k, j-outABC, i-outABC);
+
+                cumsum = Dpix-Bpix-Cpix+Apix;       
                 set_pixel(S, k, j, i, cumsum/pow(s,2));
             }
         }
