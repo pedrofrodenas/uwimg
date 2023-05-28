@@ -55,7 +55,7 @@ void gradient_matrix(matrix m, ACTIVATION a, matrix d)
 
             if (a == LOGISTIC)
             {
-                result = x - (1-x);
+                result = x * (1-x);
             }
             else if (a == RELU)
             {
