@@ -99,40 +99,21 @@ image make_integral_image(image im)
 image box_filter_image(image im, int s)
 {
     int i,j,k;
-
     image integ = make_integral_image(im);
     image S = make_image(im.c, im.h, im.w);
     // TODO: fill in S using the integral image.
-
-    int outABC = ceil(s/2.0f);
-    int inD = floor(s/2.0f);
-
-    // TODO: fix border edge-case method
-    int left, right, top, bottom;
-    float Apix, Bpix, Cpix, Dpix;
-
-    float cumsum;
-    for (k = 0; k < im.c; ++k)
-    {
-        for (j = 0; j < im.h; ++j)
-        {
-            for (i = 0; i < im.w; ++i)
-            {
-                left = i-inD;
-                right = i+inD;
-                top = j-inD;
-                bottom = j+inD;
-
-                
-
-
-                Dpix = get_pixel(integ, k, j+inD, i+inD);
-                Bpix = get_pixel(integ, k, j-outABC, i+inD);
-                Cpix = get_pixel(integ, k, j+inD, i-outABC);
-                Apix = get_pixel(integ, k, j-outABC, i-outABC);
-
-                cumsum = Dpix-Bpix-Cpix+Apix;       
-                set_pixel(S, k, j, i, cumsum/pow(s,2));
+    int offset = floor(s/2.0);
+    for (k = 0; k < im.c; k++) {
+        for (j = 0; j < im.h; j++) {
+            for (i = 0; i < im.w; i++) {
+                double sum = get_pixel(integ, k, j + offset, i + offset) - // D
+                            (j<=offset?0:get_pixel(integ, k, j - offset - 1, i + offset)) - // B
+                            (i<=offset?0:get_pixel(integ, k, j + offset, i - offset - 1)) + // C
+                            (i<=offset||j<=offset?0:get_pixel(integ, k, j - offset - 1, i - offset - 1)); // A
+              
+                set_pixel(S, k, j, i, sum / 
+                    ((i < offset ? s - offset + i : i+offset>=im.w ? s-(i+offset-im.w+1) : s) * 
+                    (j < offset ? s - offset + j : j+offset>=im.h ? s-(j+offset-im.h+1) : s)));
             }
         }
     }
