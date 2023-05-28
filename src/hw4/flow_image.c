@@ -220,9 +220,8 @@ image velocity_image(image S, int stride)
             b.data[0][0] = -Ixt;
             b.data[1][0] = -Iyt;
 
-            // TODO: Ver si esto es correcto hacerlo
             matrix Minv = matrix_invert(M);
-
+            
             if ((Minv.rows == 0) && (Minv.cols == 0))
             {
                 printf("Cell x: %d, y: %d not invertible \n", i, j);
@@ -231,6 +230,7 @@ image velocity_image(image S, int stride)
             }
             else
             {
+
                 matrix d = matrix_mult_matrix(Minv, b);
             
                 vx = d.data[0][0];
@@ -239,7 +239,7 @@ image velocity_image(image S, int stride)
             }
             free_matrix(Minv);
             set_pixel(v, 0, j/stride, i/stride, vx);
-            set_pixel(v, 0, j/stride, i/stride, vy);
+            set_pixel(v, 1, j/stride, i/stride, vy);
         }
     }
     free_matrix(M);
