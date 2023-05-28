@@ -69,6 +69,10 @@ void gradient_matrix(matrix m, ACTIVATION a, matrix d)
             {
                 result = 1;
             }
+            else if (a == SOFTMAX)
+            {
+                result = 1;
+            }
             else 
             {
                 printf("This activation function not supported classifier.c, line 72\n");
@@ -107,18 +111,23 @@ matrix backward_layer(layer *l, matrix delta)
     // 1.4.1
     // delta is dL/dy
     // TODO: modify it in place to be dL/d(xw)
+    gradient_matrix(l->out, l->activation, delta);
 
 
     // 1.4.2
     // TODO: then calculate dL/dw and save it in l->dw
+    
     free_matrix(l->dw);
-    matrix dw = make_matrix(l->w.rows, l->w.cols); // replace this
-    l->dw = dw;
+    matrix xt = transpose_matrix(l->in);
+    l->dw = matrix_mult_matrix(xt, delta);
+    free_matrix(xt);
 
     
     // 1.4.3
     // TODO: finally, calculate dL/dx and return it.
-    matrix dx = make_matrix(l->in.rows, l->in.cols); // replace this
+    matrix wt = transpose_matrix(l->w);
+    matrix dx = matrix_mult_matrix(delta, wt);
+    free_matrix(wt);
 
     return dx;
 }
@@ -132,12 +141,30 @@ void update_layer(layer *l, double rate, double momentum, double decay)
 {
     // TODO:
     // Calculate Δw_t = dL/dw_t - λw_t + mΔw_{t-1}
-    // save it to l->v
 
+    // Apply momentum to previous layer weights update
+    // mΔw_{t-1}
+    scale_matrix(l->v, momentum);
+    // Calculates decay*w_t + mΔw_{t-1}
+    // reg = λw_t + mΔw_{t-1}
+    matrix reg = axpy_matrix(decay, l->w, l->v);
+
+    matrix dw = matrix_sub_matrix(l->dw, reg);
+    free_matrix(reg);
+
+    // TODO: Puede que aqui haya un error
+    // save it to l->v
+    free_matrix(l->v);
+    l->v = dw;
+
+
+    // w_{t+1} = w_t + ηΔw_t
+    matrix neww = axpy_matrix(rate, dw, l->w);
 
     // Update l->w
-
-
+    free_matrix(l->w);
+    l->w = neww;
+    
     // Remember to free any intermediate results to avoid memory leaks
 
 }
