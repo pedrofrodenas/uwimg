@@ -148,7 +148,8 @@ image time_structure_matrix(image im, image prev, int s)
     image Ix = convolve_image(im, gx, 0);
     image Iy = convolve_image(im, gy, 0);
 
-    image It = sub_image(prev, im);
+    // Puede que el error este aquí
+    image It = sub_image(im, prev);
 
     float pixelIx, pixelIy, pixelIt;
     for (i=0; i<im.h; ++i)
@@ -175,7 +176,6 @@ image time_structure_matrix(image im, image prev, int s)
     // Smoth Time-Structure Matrix
     // TODO: Probar cambiar esto por suavizado gaussiano.
     image Ssmooth = box_filter_image(S, s);
-
 
     free_image(gx);
     free_image(gy);
