@@ -16,17 +16,25 @@ void activate_matrix(matrix m, ACTIVATION a)
             double x = m.data[i][j];
             if(a == LOGISTIC){
                 // TODO
+                m.data[i][j] = 1./(1+exp(-x));
             } else if (a == RELU){
                 // TODO
+                m.data[i][j] = (x > 0) ? x : 0;
             } else if (a == LRELU){
                 // TODO
+                m.data[i][j] = (x > 0) ? x : .1*x;
             } else if (a == SOFTMAX){
                 // TODO
+                m.data[i][j] = exp(x);
             }
             sum += m.data[i][j];
         }
         if (a == SOFTMAX) {
             // TODO: have to normalize by sum if we are using SOFTMAX
+            for (j=0; j<m.cols; ++j)
+            {
+                m.data[i][j] = m.data[i][j]/sum;
+            }
         }
     }
 }
@@ -39,10 +47,33 @@ void activate_matrix(matrix m, ACTIVATION a)
 void gradient_matrix(matrix m, ACTIVATION a, matrix d)
 {
     int i, j;
+    double result;
     for(i = 0; i < m.rows; ++i){
         for(j = 0; j < m.cols; ++j){
             double x = m.data[i][j];
             // TODO: multiply the correct element of d by the gradient
+
+            if (a == LOGISTIC)
+            {
+                result = x - (1-x);
+            }
+            else if (a == RELU)
+            {
+                result = (x > 0) ? 1 : 0;
+            }
+            else if (a == LRELU)
+            {
+                result = (x > 0) ? 1 : .1;
+            }
+            else if (a == LINEAR)
+            {
+                result = 1;
+            }
+            else 
+            {
+                printf("This activation function not supported classifier.c, line 72\n");
+            }
+            d.data[i][j] *= result;
         }
     }
 }
@@ -58,7 +89,8 @@ matrix forward_layer(layer *l, matrix in)
 
 
     // TODO: fix this! multiply input by weights and apply activation function.
-    matrix out = make_matrix(in.rows, l->w.cols);
+    matrix out = matrix_mult_matrix(in, l->w);
+    activate_matrix(out, l->activation);
 
 
     free_matrix(l->out);// free the old output
