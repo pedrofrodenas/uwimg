@@ -145,25 +145,25 @@ void update_layer(layer *l, double rate, double momentum, double decay)
     // Apply momentum to previous layer weights update
     // mΔw_{t-1}
     scale_matrix(l->v, momentum);
+    
     // Calculates decay*w_t + mΔw_{t-1}
     // reg = λw_t + mΔw_{t-1}
-    matrix reg = axpy_matrix(decay, l->w, l->v);
+    matrix reg = axpy_matrix(-decay, l->w, l->v);
 
-    matrix dw = matrix_sub_matrix(l->dw, reg);
+    matrix Awt = axpy_matrix(1, l->dw, reg);
     free_matrix(reg);
 
     // TODO: Puede que aqui haya un error
     // save it to l->v
     free_matrix(l->v);
-    l->v = dw;
-
+    l->v = Awt;
 
     // w_{t+1} = w_t + ηΔw_t
-    matrix neww = axpy_matrix(rate, dw, l->w);
+    matrix w = axpy_matrix(rate, Awt, l->w);
 
     // Update l->w
     free_matrix(l->w);
-    l->w = neww;
+    l->w = w;
     
     // Remember to free any intermediate results to avoid memory leaks
 
